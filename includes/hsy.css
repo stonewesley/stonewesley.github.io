@@ -1,0 +1,34 @@
+#blink {
+	animation: blinker 1.1s infinite alternate
+}
+
+@-webkit-keyframes 
+blinker{50%,from{visibility:hidden}to{visibility:visible}}
+
+body {
+	background-color: {{site.bgcolor}};
+	width: 800px;   
+	word-wrap: break-word;
+	display: block;
+}
+
+font, th, td, pre, div {
+	color: {{site.fontcolor}};
+	font-family: {{site.font}};
+}
+
+#welcome-pic {
+	font-size: 50%;
+}
+
+#welcome-text {
+	color: {{site.self_yellow}};
+}
+
+h3 {
+	color: {{site.self_green}};
+}
+
+strong {
+	color: {{site.self_green}};
+}
