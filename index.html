@@ -16,6 +16,10 @@ body {
 	display: block;
 }
 
+img {
+	width: 800px;
+}
+
 font, th, td, pre, div {
 	color: c7c7c7;
 	font-family: Menlo;
@@ -100,6 +104,8 @@ welcome to stone blog console, and hope you have fun here.
 		</div>
 		<div id="ctgs">
 		</div>
+		<div id="help">
+		</div>
 	</div>
 </body>
 <script type="text/javascript" src="includes/jquery-3.2.0.min.js"></script>
@@ -177,6 +183,7 @@ var help = function() {
 }
 
 function combine_cmd_exec(cmd) {
+    cmd = cmd.replace(/\s+ /g, " ");
     var cmd_arr = cmd.split(" ");
     var ret = false;
     switch (cmd_arr[0]) {
@@ -210,7 +217,7 @@ function exec_cmd(cmd) {
             $("#output").html(whoami());
             break;
         case "help":
-            $("#output").html(help());
+            $("#output").html($("#hidden > #help").html());
             break;
         case "date":
             $("#output").html("It's simple to print current date here, but I don't think you're here to look up for time. Try something meaningful. <br>");
@@ -254,15 +261,15 @@ document.onkeydown=function(event){
                     // 去掉input id
                     $("#input").removeAttr("id");
                     $("#blink").remove();
-                    $("#current").removeAttr("id");
                     var lines = $("#console");
                     // 运行输出命令结果
                     exec_cmd(cmd);
+                    $("body").scrollTop($("#current").offset().top);
+                    $("#current").removeAttr("id");
                     //lines.append('<br>');
                     $("#output").removeAttr("id");
                     // 打印新行
                     lines.append('<line id="current"><font>[hsy@github: ~]$ </font><font id="input"></font><font id="blink">_</font><br><font id="output"></font></line>');
-                    $("body").scrollTop($("#current").offset().top);
                 }
                 if (e.keyCode == 8 && cmd.length != 0) {
                     // 退格
@@ -295,6 +302,14 @@ $(document).ready(function(){
         async: false,
         success: function(data){ 
             $("#hidden > #ctgs").html(data);
+        } 
+    });
+    $.ajax({
+        method: "GET",
+        url: "help.html",
+        async: false,
+        success: function(data){ 
+            $("#hidden > #help").html(data);
         } 
     });
 });
