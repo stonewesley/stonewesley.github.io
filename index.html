@@ -86,6 +86,10 @@ strong {
 I am huahua, a 1-year old female panda live in Sichuan, Gengda.
 welcome to stone blog console, and hope you have fun here.
 	</pre>
+	<div id="bgmdiv">
+			<audio id="bgm" autoplay="autoplay" controls="controls">
+			</audio>
+		</div>
 	<div id="console">
 		<line id="current">
 			<font>
@@ -106,23 +110,55 @@ welcome to stone blog console, and hope you have fun here.
 		</div>
 		<div id="help">
 		</div>
-		<div id="bgm">
-			<audio loop="loop" autoplay="autoplay">
-				<source src="bgms/nsfewss.mp3" type="audio/mp3">
-				<source src="bgms/wzjhddasn.mp3" type="audio/mp3">
-				<source src="bgms/rwhxrwy.mp3" type="audio/mp3">
-				<source src="bgms/xhn.mp3" type="audio/mp3">
-				<source src="bgms/yydxd.mp3" type="audio/mp3">
-				<source src="bgms/xs.mp3" type="audio/mp3">
-				<source src="bgms/zxar.mp3" type="audio/mp3">
-				<source src="bgms/wqdywqdn.mp3" type="audio/mp3">
-			</audio>
-		</div>
 	</div>
 </body>
 <script type="text/javascript" src="includes/jquery-3.2.0.min.js"></script>
 <script type="text/javascript" language=JavaScript charset="UTF-8">
-	function tags() {
+	var playList = [
+    "bgms/nsfewss.mp3",
+    "bgms/wzjhddasn.mp3",
+    "bgms/rwhxrwy.mp3",
+    "bgms/xhn.mp3",
+    "bgms/yydxd.mp3",
+    "bgms/xs.mp3",
+    "bgms/zxar.mp3",
+    "bgms/wqdywqdn.mp3"
+];
+
+// about bgm
+function play_music(src) {
+    $("#bgm").attr("src", src);
+    $("#bgm")[0].play();
+}
+
+function next() {
+    au = $("#bgm");
+    currentSrc = au.attr("src");
+    var idx = playList.indexOf(currentSrc);
+    play_music(playList[++idx%playList.length]);
+}
+
+function prev() {
+    au = $("#bgm");
+    currentSrc = au.attr("src");
+    var idx = playList.indexOf(currentSrc);
+    play_music(playList[(--idx+playList.length)%playList.length]);
+}
+
+function pause() {
+    $("#bgm")[0].pause();
+}
+
+function play() {
+    $("#bgm")[0].play();
+}
+
+$("#bgm").bind('ended', function(){
+    next();
+});
+
+// about post
+function tags() {
     var ret = "";
     $.ajax({
         method: "GET",
@@ -246,6 +282,18 @@ function exec_cmd(cmd) {
         case "kill":
             $("#output").html("Oh god, can't belive you do that to me. <br>");
             break;
+        case "next":
+            $("#output").html(next());
+            break;
+        case "prev":
+            $("#output").html(prev());
+            break;
+        case "play":
+            play();
+            break;
+        case "pause":
+            pause();
+            break;
         case "":
             break;
         default:
@@ -282,6 +330,9 @@ document.onkeydown=function(event){
                     $("#output").removeAttr("id");
                     // 打印新行
                     lines.append('<line id="current"><font>[hsy@github: ~]$ </font><font id="input"></font><font id="blink">_</font><br><font id="output"></font></line>');
+                    if (cmd.indexOf('post') != 0) {
+                        $("body").scrollTop($("#current").offset().top);
+                    }
                 }
                 if (e.keyCode == 8 && cmd.length != 0) {
                     // 退格
@@ -292,6 +343,8 @@ document.onkeydown=function(event){
         }; 
 
 $(document).ready(function(){
+    // set bgm
+    play_music(playList[0]);
     $.ajax({
         method: "GET",
         url: "posts.html",
@@ -325,5 +378,6 @@ $(document).ready(function(){
         } 
     });
 });
+
 </script>
 </html>
