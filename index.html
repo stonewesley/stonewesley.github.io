@@ -49,7 +49,7 @@ strong {
 </head>
 <body>
 	<pre id="welcome-pic">
-		            ?                           ??@@??*                     **
+		<!--             ?                           ??@@??*                     **
                           ?@****                      ?@@@@@@@@@?                    *
                         ??@@@@@@@*                    @@@@@@@@@@@?
                        ?@@@@@@@@??                    *?@@@@@@@@@?*                  *
@@ -79,7 +79,7 @@ strong {
 *                *????????@???@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*******  *   **    *****?
 ***              **???????????@@@@@@@@@@@@@@ @@?@@@@@@@@@@@@@?***************  ******?
 ***               *?????????@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@?**********************??
-
+ -->
 	</pre>
 	<pre id="welcome-text">
 		
@@ -114,21 +114,67 @@ welcome to stone blog console, and hope you have fun here.
 </body>
 <script type="text/javascript" src="includes/jquery-3.2.0.min.js"></script>
 <script type="text/javascript" language=JavaScript charset="UTF-8">
-	var playList = [
+	var github_playList = [
     "bgms/nsfewss.mp3",
     "bgms/wzjhddasn.mp3",
     "bgms/rwhxrwy.mp3",
     "bgms/xhn.mp3",
     "bgms/yydxd.mp3",
     "bgms/xs.mp3",
-    "bgms/zxar.mp3",
     "bgms/wqdywqdn.mp3"
 ];
 
+var inwall_playList = [
+    "http://ip.h5.ra03.sycdn.kuwo.cn/resource/a2/48/90/70/3446521349.aac",
+    "http://ip.h5.rb03.sycdn.kuwo.cn/resource/a2/48/9/1627516291.aac",
+    "http://ip.h5.rf03.sycdn.kuwo.cn/resource/a2/81/43/2048463796.aac",
+    "http://ip.h5.ra03.sycdn.kuwo.cn/resource/a1/48/35/53/2022086012.aac",
+    "http://ip.h5.ra03.sycdn.kuwo.cn/resource/a2/48/9/37/1725934706.aac",
+    "http://ip.h5.ra03.sycdn.kuwo.cn/resource/a2/6/92/2621367827.aac",
+    "http://ip.h5.ra03.sycdn.kuwo.cn/resource/a1/48/8/8/3532112313.aac"
+];
+
+var playList = inwall_playList;
+var is_inwall = true;
+
 // about bgm
+function switch_bgm_source() {
+    var au = $("#bgm")[0];
+    if (au.readyState != 4) {
+        if (is_inwall) {
+            is_inwall = false;
+            playList = github_playList;
+        } else {
+            is_inwall = true;
+            playList = inwall_playList;
+        }
+        $("#bgm").attr("src", playList[0]);
+        au.play();
+    }
+}
+
+function switch_next() {
+    au = $("#bgm");
+    if (au[0].readyState != 4) {
+        currentSrc = au.attr("src");
+        var idx = playList.indexOf(currentSrc);
+        if (idx == playList.length) {
+            switch_bgm_source();
+        } else {
+            next();
+        }
+    }
+}
+
 function play_music(src) {
-    $("#bgm").attr("src", src);
-    $("#bgm")[0].play();
+    if (src == undefined) {
+        //switch_bgm_source();
+    } else {
+        $("#bgm").attr("src", src);
+        $("#bgm")[0].play();
+
+        //setTimeout("switch_next()", 2000);
+    }
 }
 
 function next() {
@@ -307,44 +353,50 @@ function exec_cmd(cmd) {
 }
 
 document.onkeydown=function(event){
-            var e = event || window.event || arguments.callee.caller.arguments[0];
-            if(e){
-                var cmd = $("#input").text();
-                if ((e.keyCode >= 65 && e.keyCode <= 90) ||
-                    e.keyCode == 32 ||
-                    (e.keyCode >= 48 && e.keyCode <= 57)) {
-                    // a-z直接打印
-                    $("#input").text(cmd + e.key);
-                }
-                if (e.keyCode == 13) {
-                    // 回车运行命令
-                    // 去掉input id
-                    $("#input").removeAttr("id");
-                    $("#blink").remove();
-                    var lines = $("#console");
-                    // 运行输出命令结果
-                    exec_cmd(cmd);
-                    $("body").scrollTop($("#current").offset().top);
-                    $("#current").removeAttr("id");
-                    //lines.append('<br>');
-                    $("#output").removeAttr("id");
-                    // 打印新行
-                    lines.append('<line id="current"><font>[hsy@github: ~]$ </font><font id="input"></font><font id="blink">_</font><br><font id="output"></font></line>');
-                    if (cmd.indexOf('post') != 0) {
-                        $("body").scrollTop($("#current").offset().top);
-                    }
-                }
-                if (e.keyCode == 8 && cmd.length != 0) {
-                    // 退格
-                    $("#input").text(cmd.substr(
-                        0, cmd.length - 1));
-                }
+    var e = event || window.event || arguments.callee.caller.arguments[0];
+    if(e){
+        var cmd = $("#input").text();
+        if ((e.keyCode >= 65 && e.keyCode <= 90) ||
+            e.keyCode == 32 ||
+            (e.keyCode >= 48 && e.keyCode <= 57)) {
+            // a-z直接打印
+            $("#input").text(cmd + e.key);
+        }
+        if (e.keyCode == 13) {
+            // 回车运行命令
+            // 去掉input id
+            $("#input").removeAttr("id");
+            $("#blink").remove();
+            var lines = $("#console");
+            // 运行输出命令结果
+            exec_cmd(cmd);
+            $("body").scrollTop($("#current").offset().top);
+            $("#current").removeAttr("id");
+            //lines.append('<br>');
+            $("#output").removeAttr("id");
+            // 打印新行
+            lines.append('<line id="current"><font>[hsy@github: ~]$ </font><font id="input"></font><font id="blink">_</font><br><font id="output"></font></line>');
+            if (cmd.indexOf('post') != 0) {
+                $("body").scrollTop($("#current").offset().top);
             }
-        }; 
+        }
+        if (e.keyCode == 8 && cmd.length != 0) {
+            // 退格
+            $("#input").text(cmd.substr(
+                0, cmd.length - 1));
+        }
+    }
+};
+
+function get_inwall_url() {
+    var body = $(window.frames["middle_iframe"].document).find("body").text();
+    alert(body);
+}
 
 $(document).ready(function(){
     // set bgm
     play_music(playList[0]);
+    //setTimeout("switch_bgm_source()", 3000);
     $.ajax({
         method: "GET",
         url: "posts.html",
@@ -380,4 +432,5 @@ $(document).ready(function(){
 });
 
 </script>
+<!-- <script type="text/javascript" src="http://antiserver.kuwo.cn/anti.s?response=url&format=mp3%7Cmp3&type=convert%5Furl&rid=MUSIC%5F869537"></script> -->
 </html>
