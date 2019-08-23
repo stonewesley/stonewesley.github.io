@@ -134,7 +134,7 @@ var inwall_playList = [
     "http://ip.h5.ra03.sycdn.kuwo.cn/resource/a1/48/8/8/3532112313.aac"
 ];
 
-var playList = inwall_playList;
+var playList = github_playList;
 var is_inwall = true;
 
 // about bgm
@@ -173,7 +173,7 @@ function play_music(src) {
         $("#bgm").attr("src", src);
         $("#bgm")[0].play();
 
-        //setTimeout("switch_next()", 2000);
+        //setTimeout("switch_bgm_source()", 10000);
     }
 }
 
